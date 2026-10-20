@@ -1,231 +1,251 @@
 import streamlit as st
 import pandas as pd
+import altair as alt
 
 # ---------------------------------------------------------
 # 1. Configuração da Página
 # ---------------------------------------------------------
 st.set_page_config(
-    page_title="Studio Artemis - Pole Dance & Movement",
+    page_title="Studio Artemis - Management",
     page_icon="🌙",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # ---------------------------------------------------------
-# 2. Design Personalizado e Estilização CSS (Dark & Gold)
+# 2. Estilização Visual Avançada (Dark & Gold Artemis)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
-    /* Fundo principal escuro da Artemis */
+    /* Fundo geral escuro */
     .stApp {
-        background-color: #0d0d0d;
-        color: #e0e0e0;
+        background-color: #0f0f0f;
+        color: #e5e5e5;
     }
 
-    /* Estilo do Menu Lateral */
+    /* Barra Lateral */
     [data-testid="stSidebar"] {
-        background-color: #141414 !important;
-        border-right: 1px solid #2a2415;
+        background-color: #121212 !important;
+        border-right: 1px solid #2a2211;
     }
-    
     [data-testid="stSidebar"] * {
-        color: #e5cb7a !important;
+        color: #d4af37 !important;
     }
 
-    /* Títulos e Destaques em Dourado Métalico */
-    h1, h2, h3, h4 {
+    /* Títulos e Cabeçalhos */
+    h1 {
         color: #d4af37 !important;
         font-family: 'Georgia', serif;
-        font-weight: 600;
-        letter-spacing: 0.8px;
+        font-weight: 700;
+        font-size: 1.8rem;
+        letter-spacing: 0.5px;
     }
-
-    /* Subtítulos e Textos Secundários */
-    .sub-header-text {
-        color: #aaaaaa;
-        font-size: 0.95rem;
-        margin-bottom: 2rem;
-    }
-
-    /* Cartões de Métricas Estilizados */
-    .metric-card {
-        background: linear-gradient(145deg, #181818, #111111);
-        border: 1px solid #332a15;
-        border-radius: 12px;
-        padding: 1.2rem;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    }
-    .metric-title {
-        color: #aaaaaa;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    .metric-value {
-        color: #f3e5ab;
-        font-size: 2.2rem;
-        font-weight: bold;
-        margin-top: 0.3rem;
-    }
-
-    /* Divisores Elegantes */
-    hr {
-        border-color: #2a2415 !important;
-        margin: 1.5rem 0;
-    }
-
-    /* Estilo para Tabelas e Containers */
-    [data-testid="stDataFrame"] {
-        border: 1px solid #2a2415;
-        border-radius: 8px;
-        background-color: #121212;
-    }
-
-    /* Símbolo do Cabeçalho da Barra Lateral */
-    .sidebar-brand {
-        text-align: center;
-        padding: 1rem 0;
-    }
-    .sidebar-brand-symbol {
-        font-size: 2.8rem;
-        color: #d4af37;
-        line-height: 1;
-    }
-    .sidebar-brand-title {
-        font-size: 1.3rem;
-        font-weight: bold;
-        letter-spacing: 2px;
-        color: #d4af37;
+    h3 {
+        color: #d4af37 !important;
+        font-family: 'Georgia', serif;
+        font-size: 1.1rem;
         margin-top: 0.5rem;
     }
-    .sidebar-brand-subtitle {
-        font-size: 0.75rem;
-        color: #888888;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
+
+    /* Containers de Blocos (Cards) */
+    .artemis-card {
+        background-color: #161616;
+        border: 1px solid #2a2211;
+        border-radius: 10px;
+        padding: 1.2rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+
+    /* Logotipo da Barra Lateral (Crescente Dourado) */
+    .logo-container {
+        text-align: center;
+        padding: 1.5rem 0;
+    }
+    .logo-circle {
+        width: 90px;
+        height: 90px;
+        border: 2px solid #d4af37;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        background: radial-gradient(circle, #1a170e 0%, #121212 100%);
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+    .logo-text {
+        font-size: 2.2rem;
+        color: #d4af37;
+    }
+    .logo-title {
+        font-size: 0.8rem;
+        letter-spacing: 3px;
+        color: #d4af37;
+        margin-top: 0.5rem;
+        font-weight: bold;
+    }
+
+    /* Estilização de Tabelas */
+    [data-testid="stDataFrame"] {
+        border: 1px solid #2a2211;
+        border-radius: 8px;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 3. Menu Lateral
+# 3. Sidebar (Menu Lateral com Logotipo)
 # ---------------------------------------------------------
 with st.sidebar:
     st.markdown("""
-        <div class="sidebar-brand">
-            <div class="sidebar-brand-symbol">🌙✨</div>
-            <div class="sidebar-brand-title">ARTEMIS</div>
-            <div class="sidebar-brand-subtitle">Pole Dance Studio</div>
+        <div class="logo-container">
+            <div class="logo-circle">
+                <div class="logo-text">🏹</div>
+            </div>
+            <div class="logo-title">STUDIO ARTEMIS</div>
         </div>
     """, unsafe_allow_html=True)
     
     st.markdown("---")
     
     pagina = st.radio(
-        "Menu do Sistema",
+        "Navegação",
         [
-            "📊 Dashboard Geral",
-            "👤 Fichas das Alunas",
-            "🏆 Gestão de Níveis",
-            "📖 Biblioteca de Movimentos",
-            "⚙️ Configurações"
+            "Dashboard",
+            "Fichas de Alunas",
+            "Gestão de Níveis",
+            "Biblioteca de Movimentos",
+            "Configurações"
         ]
     )
     
     st.markdown("---")
-    st.caption("Studio Artemis v1.0 • Sistema Pedagógico")
+    # Logotipo inferior na sidebar igual ao design
+    st.markdown("""
+        <div style="text-align: center; opacity: 0.7; margin-top: 2rem;">
+            <div style="font-size: 1.5rem;">🌙</div>
+            <div style="font-size: 0.65rem; letter-spacing: 2px; color: #d4af37;">ARTEMIS</div>
+        </div>
+    """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 4. Conteúdo Principal - Dashboard Geral
+# 4. Conteúdo Principal - Dashboard
 # ---------------------------------------------------------
-if pagina == "📊 Dashboard Geral":
+if pagina == "Dashboard":
     
-    # Cabeçalho Principal com Símbolo
-    col_head1, col_head2 = st.columns([1, 10])
-    with col_head1:
-        st.markdown("<h1 style='text-align: center; margin: 0;'>🏹</h1>", unsafe_allow_html=True)
-        
-    with col_head2:
-        st.title("Studio Artemis — Gestão Pedagógica")
-        st.markdown("<p class='sub-header-text'>Visão geral do progresso técnico, turmas e avaliações pendentes.</p>", unsafe_allow_html=True)
+    st.title("Dashboard de Evolução - Studio Artemis")
+    st.markdown("<div style='margin-bottom: 1.5rem;'></div>", unsafe_allow_html=True)
 
-    # Cartões de Métricas Estilizados em Dourado
-    m1, m2, m3, m4 = st.columns(4)
-    
-    with m1:
+    # Linha Superior: Gestão de Níveis e Gráfico de Rosca
+    col_top1, col_top2 = st.columns(2)
+
+    with col_top1:
+        st.markdown('<div class="artemis-card">', unsafe_allow_html=True)
+        st.subheader("Gestão de Níveis e Figuras")
+        st.write("Overall distribuição de alunas por nível:")
+        
+        # Barra visual de progresso de níveis
         st.markdown("""
-            <div class="metric-card">
-                <div class="metric-title">Alunas Ativas</div>
-                <div class="metric-value">35</div>
+            <div style="background-color: #222; border-radius: 6px; height: 14px; width: 100%; display: flex; overflow: hidden; margin: 15px 0 10px 0;">
+                <div style="width: 35%; background-color: #7a6522;" title="Básico 1"></div>
+                <div style="width: 30%; background-color: #bfa142;" title="Básico 2"></div>
+                <div style="width: 25%; background-color: #d4af37;" title="Inter 1"></div>
+                <div style="width: 10%; background-color: #f3e5ab;" title="Avançado"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #aaa;">
+                <span>Básico 1</span>
+                <span>Básico 2</span>
+                <span>Inter 1</span>
+                <span>Avançado</span>
             </div>
         """, unsafe_allow_html=True)
-        
-    with m2:
-        st.markdown("""
-            <div class="metric-card">
-                <div class="metric-title">Nível Básico</div>
-                <div class="metric-value">15</div>
-            </div>
-        """, unsafe_allow_html=True)
-        
-    with m3:
-        st.markdown("""
-            <div class="metric-card">
-                <div class="metric-title">Nível Intermédio</div>
-                <div class="metric-value">12</div>
-            </div>
-        """, unsafe_allow_html=True)
-        
-    with m4:
-        st.markdown("""
-            <div class="metric-card">
-                <div class="metric-title">Nível Avançado</div>
-                <div class="metric-value">8</div>
-            </div>
-        """, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
+    with col_top2:
+        st.markdown('<div class="artemis-card">', unsafe_allow_html=True)
+        st.subheader("Progresso Técnico por Aluna")
+        
+        # Gráfico de Rosca (Donut Chart) com Altair
+        source = pd.DataFrame({
+            'Categoria': ['Finalizado', 'Em progresso', 'Aguardando Avaliação'],
+            'Valor': [55, 30, 15],
+            'Cor': ['#222222', '#bfa142', '#d4af37']
+        })
+        
+        donut_chart = alt.Chart(source).mark_arc(innerRadius=50, outerRadius=80).encode(
+            theta=alt.Theta(field="Valor", type="quantitative"),
+            color=alt.Color(field="Categoria", type="nominal", 
+                            scale=alt.Scale(domain=['Finalizado', 'Em progresso', 'Aguardando Avaliação'],
+                                            range=['#333333', '#c2a13e', '#e6c55c']),
+                            legend=alt.Legend(orient="right", title=None))
+        ).properties(width=300, height=140)
+        
+        st.altair_chart(donut_chart, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    # Seção: Avaliações Pendentes
-    st.subheader("📌 Alunas Prontas para Exame de Nível")
-    st.write("Alunas que completaram a frequência mínima e requisitos técnicos para transição:")
+    # Linha Intermediária: Tabelas de Alunas e Requisitos
+    col_mid1, col_mid2 = st.columns(2)
 
-    dados_alunas = {
-        "Aluna": ["Ana Silva", "Beatriz Costa", "Carla Mendes", "Diana Rocha"],
-        "Nível Atual": ["Básico 1", "Básico 2", "Intermédio 1", "Básico 1"],
-        "Requisitos Concluídos": ["100% (Pronta)", "85% (Falta Climb)", "90% (Falta Trava)", "100% (Pronta)"],
-        "Status de Avaliação": ["🟢 Exame Agendado", "🟡 Em Treino", "🟡 Em Treino", "🟢 Aguardando Marcação"]
-    }
+    with col_mid1:
+        st.markdown('<div class="artemis-card">', unsafe_allow_html=True)
+        st.subheader("Alunas para Progressão de Nível")
+        
+        df_prog = pd.DataFrame({
+            "Nome": ["Ana Silva", "Beatriz Costa", "Carla Mendes"],
+            "Nível Atual": ["Básico 1", "Básico 2", "Básico"],
+            "Pendentes": [0, 0, 0]
+        })
+        
+        # Exibição simulando a tabela com botão
+        st.dataframe(df_prog, use_container_width=True, hide_index=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with col_mid2:
+        st.markdown('<div class="artemis-card">', unsafe_allow_html=True)
+        st.subheader("Mapeamento de Requisitos Técnicos")
+        
+        df_req = pd.DataFrame({
+            "Figura": ["Básico 1", "Básico 2", "Básico 3", "Inter 1", "Inter 1", "Avançado", "Avançado"],
+            "Requisitos Técnicos": [
+                "Figura 1 → Requisitos Técnicos",
+                "Figura 2 → Requisitos Técnicos",
+                "Figura 1 → Aguardando Avaliação",
+                "Figura 2 → Requisitos Técnicos",
+                "Figura 2 → Requisitos Técnicos",
+                "Trançado → Aguardando Técnicos",
+                "Figura 2 → Avançado"
+            ]
+        })
+        
+        st.dataframe(df_req, use_container_width=True, hide_index=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # Linha Inferior: Registros Rápidos e Frequência
+    st.markdown('<div class="artemis-card">', unsafe_allow_html=True)
+    st.subheader("Registros Rápidos")
     
-    df_alunas = pd.DataFrame(dados_alunas)
-    st.dataframe(df_alunas, use_container_width=True, hide_index=True)
+    col_bot1, col_bot2 = st.columns([1, 1])
+    with col_bot1:
+        st.write("Frequência e Acompanhamento de Aula")
+        st.date_input("Data da Aula", value=pd.to_datetime("2023-01-11"))
+    with col_bot2:
+        st.info("Painel rápido de controle de presenças e lançamentos diários das professoras.")
+        
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
+elif pagina == "Fichas de Alunas":
+    st.title("Fichas de Alunas")
+    st.info("Módulo detalhado de fichas individuais.")
 
-    # Resumo Rápido da Biblioteca de Movimentos
-    col_bottom1, col_bottom2 = st.columns(2)
-    
-    with col_bottom1:
-        st.subheader("📖 Figuras Cadastradas")
-        st.info("Total de 84 figuras e 32 transições registradas na Biblioteca do Studio.")
+elif pagina == "Gestão de Níveis":
+    st.title("Gestão de Níveis")
+    st.info("Módulo de configuração de níveis.")
 
-    with col_bottom2:
-        st.subheader("📅 Próximas Avaliações")
-        st.success("Exames de Mudança de Nível marcados para esta semana: 3 alunas.")
+elif pagina == "Biblioteca de Movimentos":
+    st.title("Biblioteca de Movimentos")
+    st.info("Catálogo de figuras.")
 
-elif pagina == "👤 Fichas das Alunas":
-    st.title("👤 Fichas e Histórico das Alunas")
-    st.info("Módulo em estruturação técnica.")
-
-elif pagina == "🏆 Gestão de Níveis":
-    st.title("🏆 Requisitos e Matriz de Níveis")
-    st.info("Módulo em estruturação técnica.")
-
-elif pagina == "📖 Biblioteca de Movimentos":
-    st.title("📖 Catálogo e Biblioteca de Movimentos")
-    st.info("Módulo em estruturação técnica.")
-
-elif pagina == "⚙️ Configurações":
-    st.title("⚙️ Configurações do Sistema")
-    st.info("Módulo em estruturação técnica.")
+elif pagina == "Configurações":
+    st.title("Configurações")
+    st.info("Painel de ajustes.")
