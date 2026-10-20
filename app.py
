@@ -1,0 +1,85 @@
+import streamlit as st
+import pandas as pd
+
+# 1. Configuração inicial da página
+st.set_page_config(
+    page_title="Studio Artemis - Gestão",
+    page_icon="✨",
+    layout="wide"
+)
+
+# 2. Personalização de Cores (Dourado e Escuro da Artemis)
+st.markdown("""
+    <style>
+    /* Estilo do menu lateral */
+    [data-testid="stSidebar"] {
+        background-color: #121212;
+    }
+    [data-testid="stSidebar"] * {
+        color: #F3E5AB !important;
+    }
+    /* Títulos em tom dourado */
+    h1, h2, h3 {
+        color: #D4AF37 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# 3. Menu Lateral
+with st.sidebar:
+    st.markdown("# ✨ Studio Artemis")
+    st.markdown("---")
+    
+    pagina = st.radio(
+        "Navegação",
+        [
+            "📊 Dashboard de Evolução",
+            "👤 Fichas de Alunas",
+            "🏆 Gestão de Níveis",
+            "📖 Biblioteca de Movimentos",
+            "⚙️ Configurações"
+        ]
+    )
+
+# 4. Conteúdo das Páginas
+if pagina == "📊 Dashboard de Evolução":
+    st.title("Dashboard de Evolução - Studio Artemis")
+    st.write("Visão geral de progresso técnico e métricas do estúdio.")
+    
+    st.markdown("---")
+
+    # Métrica rápidas / Resumo
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Total de Alunas", "35")
+    col2.metric("Nível Básico", "15")
+    col3.metric("Nível Intermédio", "12")
+    col4.metric("Nível Avançado", "8")
+
+    st.markdown("---")
+    st.subheader("📌 Alunas Prontas para Avaliação de Nível")
+    
+    # Exemplo de tabela inicial
+    dados_alunas = {
+        "Nome da Aluna": ["Ana Silva", "Beatriz Costa", "Carla Mendes"],
+        "Nível Atual": ["Básico 1", "Básico 2", "Intermédio 1"],
+        "Pendências": ["Nenhuma (Pronta para teste)", "1 Figura (Climb)", "1 Transição"],
+        "Status": ["Aguardando Avaliação", "Em Progresso", "Em Progresso"]
+    }
+    df = pd.DataFrame(dados_alunas)
+    st.dataframe(df, use_container_width=True)
+
+elif pagina == "👤 Fichas de Alunas":
+    st.title("Fichas das Alunas")
+    st.info("Aqui vamos construir a busca individual e histórico de evolução da aluna.")
+
+elif pagina == "🏆 Gestão de Níveis":
+    st.title("Gestão de Níveis e Transições")
+    st.info("Aqui definiremos os requisitos técnicos do Básico 1, Básico 2, Intermédio, etc.")
+
+elif pagina == "📖 Biblioteca de Movimentos":
+    st.title("Biblioteca de Movimentos")
+    st.info("Aqui cadastraremos o catálogo de figuras e transições do Pole.")
+
+elif pagina == "⚙️ Configurações":
+    st.title("Configurações")
+    st.info("Configurações do sistema.")
